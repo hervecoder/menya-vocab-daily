@@ -1,0 +1,294 @@
+{
+  "meta": {
+    "generated_at": "2026-10-22T01:32:41Z",
+    "source": "data/vocabulary_sentences.json",
+    "source_kind": "videos",
+    "chunk_size_target": 2000,
+    "chunk_count": 1,
+    "total_jobs": 12,
+    "video_entries": 72,
+    "input_entries": 72,
+    "word_entries": 0,
+    "sentence_entries": 72,
+    "video_word_entries": 0,
+    "video_sentence_entries": 72,
+    "eligible_word_entries": 0,
+    "eligible_sentence_entries": 72,
+    "remainder_entries": 0,
+    "excluded_unverified_entries": 0,
+    "excluded_unverified_word_entries": 0,
+    "excluded_unverified_sentence_entries": 0,
+    "verified_only": true,
+    "trusted_dictionary": false,
+    "trusted_corpus": true,
+    "id_prefix": "sentence_",
+    "chunk_prefix": "sentence_chunk_",
+    "unique_videos": 12,
+    "unique_entries": 72,
+    "strict_unique_entries": true,
+    "skipped_videos": [],
+    "excluded_remainder": [],
+    "excluded_entries": [],
+    "allow_partial": false,
+    "word_video_size": 7,
+    "sentence_video_size_min": 5,
+    "sentence_video_size_max": 6
+  },
+  "chunks": [
+    {
+      "chunk_id": 1,
+      "file": "sentence_chunks/sentence_chunk_01.json",
+      "entry_start": 1,
+      "entry_end": 72,
+      "entry_count": 72,
+      "content_start": 1,
+      "content_end": 12
+    }
+  ],
+  "jobs": [
+    {
+      "id": "sentence_0001",
+      "content_number": 1,
+      "source_id": "sentence_0001",
+      "chunk_id": 1,
+      "job_index": 0,
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "entry_start": 1,
+      "entry_end": 6,
+      "source_entry_ids": [
+        "sentence_entry_0001",
+        "sentence_entry_0002",
+        "sentence_entry_0003",
+        "sentence_entry_0004",
+        "sentence_entry_0005",
+        "sentence_entry_0006"
+      ]
+    },
+    {
+      "id": "sentence_0002",
+      "content_number": 2,
+      "source_id": "sentence_0002",
+      "chunk_id": 1,
+      "job_index": 1,
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "entry_start": 7,
+      "entry_end": 12,
+      "source_entry_ids": [
+        "sentence_entry_0007",
+        "sentence_entry_0008",
+        "sentence_entry_0009",
+        "sentence_entry_0010",
+        "sentence_entry_0011",
+        "sentence_entry_0012"
+      ]
+    },
+    {
+      "id": "sentence_0003",
+      "content_number": 3,
+      "source_id": "sentence_0003",
+      "chunk_id": 1,
+      "job_index": 2,
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "entry_start": 13,
+      "entry_end": 18,
+      "source_entry_ids": [
+        "sentence_entry_0013",
+        "sentence_entry_0014",
+        "sentence_entry_0015",
+        "sentence_entry_0016",
+        "sentence_entry_0017",
+        "sentence_entry_0018"
+      ]
+    },
+    {
+      "id": "sentence_0004",
+      "content_number": 4,
+      "source_id": "sentence_0004",
+      "chunk_id": 1,
+      "job_index": 3,
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "entry_start": 19,
+      "entry_end": 24,
+      "source_entry_ids": [
+        "sentence_entry_0019",
+        "sentence_entry_0020",
+        "sentence_entry_0021",
+        "sentence_entry_0022",
+        "sentence_entry_0023",
+        "sentence_entry_0024"
+      ]
+    },
+    {
+      "id": "sentence_0005",
+      "content_number": 5,
+      "source_id": "sentence_0005",
+      "chunk_id": 1,
+      "job_index": 4,
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "entry_start": 25,
+      "entry_end": 30,
+      "source_entry_ids": [
+        "sentence_entry_0025",
+        "sentence_entry_0026",
+        "sentence_entry_0027",
+        "sentence_entry_0028",
+        "sentence_entry_0029",
+        "sentence_entry_0030"
+      ]
+    },
+    {
+      "id": "sentence_0006",
+      "content_number": 6,
+      "source_id": "sentence_0006",
+      "chunk_id": 1,
+      "job_index": 5,
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "entry_start": 31,
+      "entry_end": 36,
+      "source_entry_ids": [
+        "sentence_entry_0031",
+        "sentence_entry_0032",
+        "sentence_entry_0033",
+        "sentence_entry_0034",
+        "sentence_entry_0035",
+        "sentence_entry_0036"
+      ]
+    },
+    {
+      "id": "sentence_0007",
+      "content_number": 7,
+      "source_id": "sentence_0007",
+      "chunk_id": 1,
+      "job_index": 6,
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "entry_start": 37,
+      "entry_end": 42,
+      "source_entry_ids": [
+        "sentence_entry_0037",
+        "sentence_entry_0038",
+        "sentence_entry_0039",
+        "sentence_entry_0040",
+        "sentence_entry_0041",
+        "sentence_entry_0042"
+      ]
+    },
+    {
+      "id": "sentence_0008",
+      "content_number": 8,
+      "source_id": "sentence_0008",
+      "chunk_id": 1,
+      "job_index": 7,
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "entry_start": 43,
+      "entry_end": 48,
+      "source_entry_ids": [
+        "sentence_entry_0043",
+        "sentence_entry_0044",
+        "sentence_entry_0045",
+        "sentence_entry_0046",
+        "sentence_entry_0047",
+        "sentence_entry_0048"
+      ]
+    },
+    {
+      "id": "sentence_0009",
+      "content_number": 9,
+      "source_id": "sentence_0009",
+      "chunk_id": 1,
+      "job_index": 8,
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "entry_start": 49,
+      "entry_end": 54,
+      "source_entry_ids": [
+        "sentence_entry_0049",
+        "sentence_entry_0050",
+        "sentence_entry_0051",
+        "sentence_entry_0052",
+        "sentence_entry_0053",
+        "sentence_entry_0054"
+      ]
+    },
+    {
+      "id": "sentence_0010",
+      "content_number": 10,
+      "source_id": "sentence_0010",
+      "chunk_id": 1,
+      "job_index": 9,
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "entry_start": 55,
+      "entry_end": 60,
+      "source_entry_ids": [
+        "sentence_entry_0055",
+        "sentence_entry_0056",
+        "sentence_entry_0057",
+        "sentence_entry_0058",
+        "sentence_entry_0059",
+        "sentence_entry_0060"
+      ]
+    },
+    {
+      "id": "sentence_0011",
+      "content_number": 11,
+      "source_id": "sentence_0011",
+      "chunk_id": 1,
+      "job_index": 10,
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "entry_start": 61,
+      "entry_end": 66,
+      "source_entry_ids": [
+        "sentence_entry_0061",
+        "sentence_entry_0062",
+        "sentence_entry_0063",
+        "sentence_entry_0064",
+        "sentence_entry_0065",
+        "sentence_entry_0066"
+      ]
+    },
+    {
+      "id": "sentence_0012",
+      "content_number": 12,
+      "source_id": "sentence_0012",
+      "chunk_id": 1,
+      "job_index": 11,
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "entry_start": 67,
+      "entry_end": 72,
+      "source_entry_ids": [
+        "sentence_entry_0067",
+        "sentence_entry_0068",
+        "sentence_entry_0069",
+        "sentence_entry_0070",
+        "sentence_entry_0071",
+        "sentence_entry_0072"
+      ]
+    }
+  ],
+  "remainder": {
+    "words": [],
+    "sentences": []
+  }
+}

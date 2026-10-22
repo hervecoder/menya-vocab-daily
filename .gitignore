@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Local scratch
+data/.*.json
+data/.current_job.json
+data/.rotation_pending.json
+data/.sentence_job.json
+data/.sentence_pending.json

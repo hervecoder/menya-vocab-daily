@@ -1,0 +1,1426 @@
+{
+  "chunk_id": 1,
+  "entry_start": 1,
+  "entry_end": 72,
+  "entry_count": 72,
+  "content_start": 1,
+  "content_end": 12,
+  "jobs": [
+    {
+      "source_id": "sentence_0001",
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "source_indices": [],
+      "source_entry_ids": [
+        "sentence_entry_0001",
+        "sentence_entry_0002",
+        "sentence_entry_0003",
+        "sentence_entry_0004",
+        "sentence_entry_0005",
+        "sentence_entry_0006"
+      ],
+      "first_source_index": 0,
+      "pairs": [
+        {
+          "english": "There is something I want you to know.",
+          "kinyarwanda": "Hariho ikintu nshaka ko umenya.",
+          "entry_id": "sentence_entry_0001",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "Do you think this is a good idea?",
+          "kinyarwanda": "Mutekereza ko iki ari igitekerezo cyiza?",
+          "entry_id": "sentence_entry_0002",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "I want to hear you say that again.",
+          "kinyarwanda": "Ndashaka kumva wongeye kubivuga.",
+          "entry_id": "sentence_entry_0003",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "How many people do you think will be there?",
+          "kinyarwanda": "Utekereza ko hazaba hari abantu bangahe?",
+          "entry_id": "sentence_entry_0004",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "I think you might want to hear this.",
+          "kinyarwanda": "Ndatekereza ko ushobora kuba ushaka kumva ibi.",
+          "entry_id": "sentence_entry_0005",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "All you have to do is wait for his answer.",
+          "kinyarwanda": "Ibyo ugomba gukora byose ni ugutegereza igisubizo cye.",
+          "entry_id": "sentence_entry_0006",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        }
+      ],
+      "content_number": 1,
+      "id": "sentence_0001",
+      "entry_start": 1,
+      "entry_end": 6
+    },
+    {
+      "source_id": "sentence_0002",
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "source_indices": [],
+      "source_entry_ids": [
+        "sentence_entry_0007",
+        "sentence_entry_0008",
+        "sentence_entry_0009",
+        "sentence_entry_0010",
+        "sentence_entry_0011",
+        "sentence_entry_0012"
+      ],
+      "first_source_index": 1,
+      "pairs": [
+        {
+          "english": "This is going to take some time to explain.",
+          "kinyarwanda": "Ibi bigiye gufata igihe cyo gusobanura.",
+          "entry_id": "sentence_entry_0007",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "You have to live well while you are alive.",
+          "kinyarwanda": "Ugomba kubaho neza mu gihe ukiriho.",
+          "entry_id": "sentence_entry_0008",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "Go and ask a child who is playing there.",
+          "kinyarwanda": "Genda ubaza umwana uri gukinira hariya.",
+          "entry_id": "sentence_entry_0009",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "Many times people do not want to die.",
+          "kinyarwanda": "Inshuro nyinshi usanga abantu badashaka gupfa.",
+          "entry_id": "sentence_entry_0010",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "I want to say a few words.",
+          "kinyarwanda": "Ndashaka kuvuga amagambo make.",
+          "entry_id": "sentence_entry_0011",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "Yet they did not want to spend too much time.",
+          "kinyarwanda": "Nyamara ntibifuzaga no gukoresha igihe kirekire cyane.",
+          "entry_id": "sentence_entry_0012",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        }
+      ],
+      "content_number": 2,
+      "id": "sentence_0002",
+      "entry_start": 7,
+      "entry_end": 12
+    },
+    {
+      "source_id": "sentence_0003",
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "source_indices": [],
+      "source_entry_ids": [
+        "sentence_entry_0013",
+        "sentence_entry_0014",
+        "sentence_entry_0015",
+        "sentence_entry_0016",
+        "sentence_entry_0017",
+        "sentence_entry_0018"
+      ],
+      "first_source_index": 2,
+      "pairs": [
+        {
+          "english": "I never wanted to lose my job.",
+          "kinyarwanda": "Ntabwo nigeze nifuza kuba nabura akazi.",
+          "entry_id": "sentence_entry_0013",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "I want to ask you a few questions.",
+          "kinyarwanda": "Ndashaka kukubaza ibibazo bike.",
+          "entry_id": "sentence_entry_0014",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "For some reason he is going to write.",
+          "kinyarwanda": "Bitewe n'impamvu agiye kwandika.",
+          "entry_id": "sentence_entry_0015",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "There are few children in the school.",
+          "kinyarwanda": "Mu ishuri hari abana bake.",
+          "entry_id": "sentence_entry_0016",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "He says there is something under the bed.",
+          "kinyarwanda": "Avuga ko hari ikintu munsi y'igitanda.",
+          "entry_id": "sentence_entry_0017",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "The girl running there is my sister.",
+          "kinyarwanda": "Umukobwa wiruka hariya ni mushiki wanjye.",
+          "entry_id": "sentence_entry_0018",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        }
+      ],
+      "content_number": 3,
+      "id": "sentence_0003",
+      "entry_start": 13,
+      "entry_end": 18
+    },
+    {
+      "source_id": "sentence_0004",
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "source_indices": [],
+      "source_entry_ids": [
+        "sentence_entry_0019",
+        "sentence_entry_0020",
+        "sentence_entry_0021",
+        "sentence_entry_0022",
+        "sentence_entry_0023",
+        "sentence_entry_0024"
+      ],
+      "first_source_index": 3,
+      "pairs": [
+        {
+          "english": "We will pay you according to the work you do.",
+          "kinyarwanda": "Tuzaguhemba dukurikije akazi ukora.",
+          "entry_id": "sentence_entry_0019",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "You have a dog that can run fast.",
+          "kinyarwanda": "Mufite imbwa ishobora kwiruka vuba.",
+          "entry_id": "sentence_entry_0020",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "We say he is very rich.",
+          "kinyarwanda": "Tuvuga ko ari umukire cyane.",
+          "entry_id": "sentence_entry_0021",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "You have less time to read these days.",
+          "kinyarwanda": "Mufite umwanya muto wo gusoma muri iyi minsi.",
+          "entry_id": "sentence_entry_0022",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "There is a lot of money in the account.",
+          "kinyarwanda": "Muri konti harimo amafaranga menshi.",
+          "entry_id": "sentence_entry_0023",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "Were you present at the time of the accident?",
+          "kinyarwanda": "Wari uhari igihe impanuka yabaga?",
+          "entry_id": "sentence_entry_0024",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        }
+      ],
+      "content_number": 4,
+      "id": "sentence_0004",
+      "entry_start": 19,
+      "entry_end": 24
+    },
+    {
+      "source_id": "sentence_0005",
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "source_indices": [],
+      "source_entry_ids": [
+        "sentence_entry_0025",
+        "sentence_entry_0026",
+        "sentence_entry_0027",
+        "sentence_entry_0028",
+        "sentence_entry_0029",
+        "sentence_entry_0030"
+      ],
+      "first_source_index": 4,
+      "pairs": [
+        {
+          "english": "They do not set a date for their wedding.",
+          "kinyarwanda": "Ntabwo barashiraho itariki y'ubukwe bwabo.",
+          "entry_id": "sentence_entry_0025",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "We never got there when it started to rain.",
+          "kinyarwanda": "Ntabwo twigeze tugerayo igihe imvura yatangiraga kugwa.",
+          "entry_id": "sentence_entry_0026",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "Look at the boy and the dogs running there.",
+          "kinyarwanda": "Reba umuhungu n'imbwa ziruka hariya.",
+          "entry_id": "sentence_entry_0027",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "I will have to correct them for my mistake.",
+          "kinyarwanda": "Nzagomba kubakosora ku bw'ikosa ryanjye.",
+          "entry_id": "sentence_entry_0028",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "Do you think it will rain in the afternoon?",
+          "kinyarwanda": "Mutekereza ko imvura izagwa nyuma ya saa sita?",
+          "entry_id": "sentence_entry_0029",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "Have you decided whether to sell your house or not?",
+          "kinyarwanda": "Wigeze uhitamo niba uzagurisha inzu yawe cyangwa utayigurisha?",
+          "entry_id": "sentence_entry_0030",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        }
+      ],
+      "content_number": 5,
+      "id": "sentence_0005",
+      "entry_start": 25,
+      "entry_end": 30
+    },
+    {
+      "source_id": "sentence_0006",
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "source_indices": [],
+      "source_entry_ids": [
+        "sentence_entry_0031",
+        "sentence_entry_0032",
+        "sentence_entry_0033",
+        "sentence_entry_0034",
+        "sentence_entry_0035",
+        "sentence_entry_0036"
+      ],
+      "first_source_index": 5,
+      "pairs": [
+        {
+          "english": "There may have been a road accident.",
+          "kinyarwanda": "Birashoboka ko habaye impanuka yo mu muhanda.",
+          "entry_id": "sentence_entry_0031",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "There was a train accident early in the morning.",
+          "kinyarwanda": "Habaye impanuka ya gari ya moshi kare mu gitondo.",
+          "entry_id": "sentence_entry_0032",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "There is a lot of rain all year round.",
+          "kinyarwanda": "Umwaka wose hari imvura nyinshi.",
+          "entry_id": "sentence_entry_0033",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "The hotel I am in does not have parking.",
+          "kinyarwanda": "Hoteri ndimo ntabwo ifite parikingi.",
+          "entry_id": "sentence_entry_0034",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "I have to take photos for my school project.",
+          "kinyarwanda": "Ngomba gufata amafoto ku mushinga wanjye w'ishuri.",
+          "entry_id": "sentence_entry_0035",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "Is there a reason why I should obey him?",
+          "kinyarwanda": "Hari impamvu ituma ngomba kumwumvira?",
+          "entry_id": "sentence_entry_0036",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        }
+      ],
+      "content_number": 6,
+      "id": "sentence_0006",
+      "entry_start": 31,
+      "entry_end": 36
+    },
+    {
+      "source_id": "sentence_0007",
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "source_indices": [],
+      "source_entry_ids": [
+        "sentence_entry_0037",
+        "sentence_entry_0038",
+        "sentence_entry_0039",
+        "sentence_entry_0040",
+        "sentence_entry_0041",
+        "sentence_entry_0042"
+      ],
+      "first_source_index": 6,
+      "pairs": [
+        {
+          "english": "In the south there are many enemies.",
+          "kinyarwanda": "Mu majyepfo hari abanzi benshi cyane.",
+          "entry_id": "sentence_entry_0037",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "Time passes when we do something we love.",
+          "kinyarwanda": "Igihe kirahita iyo dukora ikintu dukunda.",
+          "entry_id": "sentence_entry_0038",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "There is sand on the bottom of the sea.",
+          "kinyarwanda": "Hasi y'inyanja hari umusenyi.",
+          "entry_id": "sentence_entry_0039",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "The hotel has five other guests.",
+          "kinyarwanda": "Muri hoteri hari abandi bashyitsi batanu.",
+          "entry_id": "sentence_entry_0040",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "He drank a cup of tea and asked for more.",
+          "kinyarwanda": "Yanyweye igikombe cy'icyayi hanyuma asaba ikindi.",
+          "entry_id": "sentence_entry_0041",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "The employee himself would not do so.",
+          "kinyarwanda": "Umukozi nawe ubwe ntabwo yabikora.",
+          "entry_id": "sentence_entry_0042",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        }
+      ],
+      "content_number": 7,
+      "id": "sentence_0007",
+      "entry_start": 37,
+      "entry_end": 42
+    },
+    {
+      "source_id": "sentence_0008",
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "source_indices": [],
+      "source_entry_ids": [
+        "sentence_entry_0043",
+        "sentence_entry_0044",
+        "sentence_entry_0045",
+        "sentence_entry_0046",
+        "sentence_entry_0047",
+        "sentence_entry_0048"
+      ],
+      "first_source_index": 7,
+      "pairs": [
+        {
+          "english": "The working man must be paid according to his skill.",
+          "kinyarwanda": "Umugabo ukora agomba guhembwa akurikije ubuhanga bwe.",
+          "entry_id": "sentence_entry_0043",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "There was a lot of fear after the earthquake.",
+          "kinyarwanda": "Nyuma y'umutingito habaye ubwoba bwinshi.",
+          "entry_id": "sentence_entry_0044",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "I wrote an article for a school magazine.",
+          "kinyarwanda": "Nanditse ingingo y'ikinyamakuru cy'ishuri.",
+          "entry_id": "sentence_entry_0045",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "Using the ability to think helps.",
+          "kinyarwanda": "Gukoresha ubushobozi bwo gutekereza birafasha.",
+          "entry_id": "sentence_entry_0046",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "From the tenth minute I had a chance to win.",
+          "kinyarwanda": "Kuva ku munota wa cumi narimfite amahirwe yo gutsinda.",
+          "entry_id": "sentence_entry_0047",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "The concert was packed with people.",
+          "kinyarwanda": "Igitaramo cyari kirimo abantu benshi.",
+          "entry_id": "sentence_entry_0048",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        }
+      ],
+      "content_number": 8,
+      "id": "sentence_0008",
+      "entry_start": 43,
+      "entry_end": 48
+    },
+    {
+      "source_id": "sentence_0009",
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "source_indices": [],
+      "source_entry_ids": [
+        "sentence_entry_0049",
+        "sentence_entry_0050",
+        "sentence_entry_0051",
+        "sentence_entry_0052",
+        "sentence_entry_0053",
+        "sentence_entry_0054"
+      ],
+      "first_source_index": 8,
+      "pairs": [
+        {
+          "english": "Behind our house is a cottage.",
+          "kinyarwanda": "Inyuma y'inzu yacu hari akazu.",
+          "entry_id": "sentence_entry_0049",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "A lot of money goes into the pockets of individuals.",
+          "kinyarwanda": "Amafaranga menshi akajya mu mifuka y'abantu ku giti cyabo.",
+          "entry_id": "sentence_entry_0050",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "At the top of the pillar was a flag.",
+          "kinyarwanda": "Hejuru y'inkingi hari ibendera.",
+          "entry_id": "sentence_entry_0051",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "Do you have information on old music concerts?",
+          "kinyarwanda": "Waba ufite amakuru ku bitaramo bya muzika bya kera?",
+          "entry_id": "sentence_entry_0052",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "It will take time to finish unloading this truck.",
+          "kinyarwanda": "Bizatwara igihe cyo kurangiza gupakurura iyi kamyo.",
+          "entry_id": "sentence_entry_0053",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "There must be a way to achieve diplomatic solutions.",
+          "kinyarwanda": "Hagomba kubaho inzira yo kugera ku bisubizo bya diplomasi.",
+          "entry_id": "sentence_entry_0054",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        }
+      ],
+      "content_number": 9,
+      "id": "sentence_0009",
+      "entry_start": 49,
+      "entry_end": 54
+    },
+    {
+      "source_id": "sentence_0010",
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "source_indices": [],
+      "source_entry_ids": [
+        "sentence_entry_0055",
+        "sentence_entry_0056",
+        "sentence_entry_0057",
+        "sentence_entry_0058",
+        "sentence_entry_0059",
+        "sentence_entry_0060"
+      ],
+      "first_source_index": 9,
+      "pairs": [
+        {
+          "english": "He is not accustomed to urban life.",
+          "kinyarwanda": "Ntabwo aramenyera ubuzima bw'umujyi.",
+          "entry_id": "sentence_entry_0055",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "Mom loves tulips and so does my sister.",
+          "kinyarwanda": "Mama akunda tulipa cyane na mushiki wanjye.",
+          "entry_id": "sentence_entry_0056",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "Instead they are motivated to fulfill their responsibilities.",
+          "kinyarwanda": "Ahubwo bagashishikazwa no gusohoza inshingano zabo.",
+          "entry_id": "sentence_entry_0057",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "He grew up to be a good man.",
+          "kinyarwanda": "Yarakuze aba umugabo mwiza.",
+          "entry_id": "sentence_entry_0058",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "There is a market building near my house.",
+          "kinyarwanda": "Hano hari isoko hafi y'inzu yanjye.",
+          "entry_id": "sentence_entry_0059",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "This is a photo of my wife on the sand.",
+          "kinyarwanda": "Iyi ni ifoto y'umugore wanjye ku musenyi.",
+          "entry_id": "sentence_entry_0060",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        }
+      ],
+      "content_number": 10,
+      "id": "sentence_0010",
+      "entry_start": 55,
+      "entry_end": 60
+    },
+    {
+      "source_id": "sentence_0011",
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "source_indices": [],
+      "source_entry_ids": [
+        "sentence_entry_0061",
+        "sentence_entry_0062",
+        "sentence_entry_0063",
+        "sentence_entry_0064",
+        "sentence_entry_0065",
+        "sentence_entry_0066"
+      ],
+      "first_source_index": 10,
+      "pairs": [
+        {
+          "english": "It is not a problem for me to quit my job.",
+          "kinyarwanda": "Ntabwo ari ikibazo kuri njye kureka akazi.",
+          "entry_id": "sentence_entry_0061",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "The teacher told me that I would not be late for school.",
+          "kinyarwanda": "Umwarimu yambwiye ko ntazatinda ku ishuri.",
+          "entry_id": "sentence_entry_0062",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "People say that I am the same age as my sister.",
+          "kinyarwanda": "Abantu bavuga ko mfite imyaka ingana n'iya mushiki wanjye.",
+          "entry_id": "sentence_entry_0063",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "We could not bear to hear the cry of the sick child.",
+          "kinyarwanda": "Ntabwo twashoboye kwihanganira kumva gutaka k'umwana urwaye.",
+          "entry_id": "sentence_entry_0064",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "There are a lot of people on both sides of the road.",
+          "kinyarwanda": "Ku mpande zombi z'umuhanda hari abantu benshi.",
+          "entry_id": "sentence_entry_0065",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "You should not be afraid to make mistakes while learning a language.",
+          "kinyarwanda": "Ntugomba gutinya gukora amakosa mu gihe wiga ururimi.",
+          "entry_id": "sentence_entry_0066",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        }
+      ],
+      "content_number": 11,
+      "id": "sentence_0011",
+      "entry_start": 61,
+      "entry_end": 66
+    },
+    {
+      "source_id": "sentence_0012",
+      "mode": "sentence",
+      "pair_count": 6,
+      "line_count": 12,
+      "source_indices": [],
+      "source_entry_ids": [
+        "sentence_entry_0067",
+        "sentence_entry_0068",
+        "sentence_entry_0069",
+        "sentence_entry_0070",
+        "sentence_entry_0071",
+        "sentence_entry_0072"
+      ],
+      "first_source_index": 11,
+      "pairs": [
+        {
+          "english": "There was so much noise that the speaker could not hear.",
+          "kinyarwanda": "Hariho urusaku rwinshi ku buryo uwatanze disikuru atashoboraga kumva.",
+          "entry_id": "sentence_entry_0067",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "The game would not be suspended if it did not rain heavily.",
+          "kinyarwanda": "Umukino ntiwari guhagarikwa iyo imvura itagwa cyane.",
+          "entry_id": "sentence_entry_0068",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "You should not be discouraged because you are not an expert.",
+          "kinyarwanda": "Ntugomba gucika intege kuko utari umuhanga.",
+          "entry_id": "sentence_entry_0069",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "The midterm exam will start next week.",
+          "kinyarwanda": "Ikizamini cyo hagati kizatangira icyumweru gitaha.",
+          "entry_id": "sentence_entry_0070",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        },
+        {
+          "english": "Some people do not like to get up early in the morning.",
+          "kinyarwanda": "Abantu bamwe ntibakunda kubyuka kare mu gitondo.",
+          "entry_id": "sentence_entry_0071",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; orthography normalized; native review recommended."
+        },
+        {
+          "english": "Inside the refrigerator is a bottle of white wine.",
+          "kinyarwanda": "Muri firigo harimo icupa rya vino yera.",
+          "entry_id": "sentence_entry_0072",
+          "group_id": "daily-sentences",
+          "group_title": "Everyday Sentences",
+          "grammar": "sentence",
+          "verification": "verified",
+          "verification_tier": "corpus",
+          "corpus_hits": 0,
+          "sources": [
+            "data/sources/en_rw_corpus.tsv",
+            "Aligned English/Kinyarwanda corpus"
+          ],
+          "notes": "Corpus-aligned; native review recommended."
+        }
+      ],
+      "content_number": 12,
+      "id": "sentence_0012",
+      "entry_start": 67,
+      "entry_end": 72
+    }
+  ]
+}

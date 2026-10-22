@@ -1,0 +1,19 @@
+{
+  "updated_at": "2026-10-22T08:57:59Z",
+  "posts": [
+    {
+      "key": "sentence_0002@cycle-1",
+      "content_id": "sentence_0002",
+      "cycle": 1,
+      "buffer_post_id": "6ad9d01831bddaf9c5cfb75f",
+      "channel_id": "6ad96cb8778b240e2f850bc4",
+      "status": "scheduled",
+      "due_at": "2026-10-22T16:30:00.000Z",
+      "share_mode": "customScheduled",
+      "is_custom_scheduled": true,
+      "text": "",
+      "video_url": "https://raw.githubusercontent.com/hervecoder/menya-vocab-video/main/output/sentence_0002.mp4",
+      "scheduled_at": "2026-10-22T08:57:59Z"
+    }
+  ]
+}

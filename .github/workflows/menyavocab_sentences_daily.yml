@@ -1,0 +1,368 @@
+name: Menya Vocab Sentences Daily
+
+# Daily publisher for the Menya Icyongereza TikTok channel (@perime.rw250).
+#
+# This repository is standalone on purpose: GitHub does not fire the
+# `schedule` trigger on public forks, so the daily job cannot live in a fork
+# of the upstream content repo. It renders one sentence video, commits the
+# mp4 so Buffer can fetch it over a public raw URL, then schedules the post
+# on TikTok at 18:30 Africa/Kigali with a blank caption.
+#
+# The rotation state lives in data/sentence_rotation_state.json and the
+# Buffer post ids in data/buffer_queue.json, both committed after a
+# successful publish.
+on:
+  schedule:
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+    inputs:
+      content_id:
+        description: 'Optional replay id (e.g. sentence_0001). Leave empty for auto-next.'
+        required: false
+        default: ''
+      publish:
+        description: 'Set false to render and validate without scheduling on Buffer.'
+        required: false
+        default: 'true'
+      note:
+        description: 'Yellow box text. The brand name is highlighted in green.'
+        required: true
+        default: 'Iyi app yitwa "Menya Icyongereza App" wayisanga kuri Play Store yigisha icyongereza'
+      brand:
+        description: 'Text to highlight green inside the note'
+        required: false
+        default: 'Menya Icyongereza App'
+      duration:
+        description: 'Video length in seconds'
+        required: false
+        default: '6'
+      post_time:
+        description: 'TikTok publish time in Africa/Kigali (HH:MM, after 15:00)'
+        required: false
+        default: '18:30'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: menya-vocab-sentences-daily
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      # Scheduled runs do not populate the workflow_dispatch inputs, so every
+      # value used by both entry points has an explicit fallback.
+      NOTE: ${{ inputs.note || 'Iyi app yitwa "Menya Icyongereza App" wayisanga kuri Play Store yigisha icyongereza' }}
+      BRAND: ${{ inputs.brand || 'Menya Icyongereza App' }}
+      DURATION: ${{ inputs.duration || '6' }}
+      POST_TIME: ${{ inputs.post_time || '18:30' }}
+      PUBLISH: ${{ inputs.publish || 'true' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Check Buffer secret
+        if: github.event_name == 'schedule' || inputs.content_id == ''
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+        run: |
+          if [ -z "$BUFFER_API_KEY" ]; then
+            echo "::error::BUFFER_API_KEY repository secret is not set."
+            exit 1
+          fi
+
+      - name: Validate sentence rotation database
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          EXPECTED_CHUNKS = 1
+          EXPECTED_PAIRS = 72
+          MIN_PAIRS = 5
+          MAX_PAIRS = 6
+
+          manifest_path = Path("data/sentence_rotation_manifest.json")
+          manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+          jobs = manifest.get("jobs") or []
+          chunks = manifest.get("chunks") or []
+          meta = manifest.get("meta", {})
+
+          source_path = Path("data/vocabulary_sentences.json")
+          source = json.loads(source_path.read_text(encoding="utf-8"))
+          source_videos = source.get("videos") or []
+          source_meta = source.get("meta", {})
+          expected_videos = int(source_meta.get("total_videos", len(source_videos)))
+
+          if expected_videos != len(source_videos):
+              raise SystemExit(
+                  "sentence source total_videos does not match its video list"
+              )
+          if len(jobs) != expected_videos:
+              raise SystemExit(
+                  f"sentence database has {len(jobs)} jobs; "
+                  f"expected {expected_videos}"
+              )
+          if len(chunks) != EXPECTED_CHUNKS:
+              raise SystemExit(
+                  f"sentence database has {len(chunks)} chunks; "
+                  f"expected {EXPECTED_CHUNKS}"
+              )
+          if meta.get("total_jobs") != expected_videos:
+              raise SystemExit("sentence manifest total_jobs is inconsistent")
+          if meta.get("unique_videos") != expected_videos:
+              raise SystemExit(
+                  f"sentence manifest does not report {expected_videos} unique videos"
+              )
+          if meta.get("sentence_entries") != EXPECTED_PAIRS:
+              raise SystemExit(
+                  f"sentence manifest does not report {EXPECTED_PAIRS} pairs"
+              )
+
+          source_ids = [str(video.get("id")) for video in source_videos]
+          manifest_ids = [str(job.get("id")) for job in jobs]
+          if source_ids != manifest_ids:
+              raise SystemExit(
+                  "sentence manifest ids do not match the source video order"
+              )
+
+          chunk_cache = {}
+          seen_videos = set()
+          for index, entry in enumerate(jobs):
+              chunk_id = int(entry["chunk_id"])
+              chunk = chunk_cache.get(chunk_id)
+              if chunk is None:
+                  chunk_path = manifest_path.parent / chunks[chunk_id - 1]["file"]
+                  if not chunk_path.exists():
+                      raise SystemExit(f"missing chunk file: {chunk_path}")
+                  chunk = json.loads(chunk_path.read_text(encoding="utf-8"))
+                  chunk_cache[chunk_id] = chunk
+              job = chunk["jobs"][int(entry["job_index"])]
+              if job.get("id") != entry.get("id"):
+                  raise SystemExit(
+                      f"job mismatch at {index}: {entry.get('id')} != {job.get('id')}"
+                  )
+              if job.get("mode") != "sentence":
+                  raise SystemExit(f"{entry.get('id')} is not a sentence video")
+              pairs = job.get("pairs") or []
+              pair_count = int(job.get("pair_count", len(pairs)))
+              if pair_count not in {MIN_PAIRS, MAX_PAIRS}:
+                  raise SystemExit(
+                      f"{entry.get('id')} has pair_count={pair_count}; "
+                      f"expected {MIN_PAIRS} or {MAX_PAIRS}"
+                  )
+              if len(pairs) != pair_count:
+                  raise SystemExit(
+                      f"{entry.get('id')} has {len(pairs)} pairs but "
+                      f"pair_count={pair_count}"
+                  )
+              expected_lines = pair_count * 2
+              if int(entry.get("line_count", 0)) != expected_lines:
+                  raise SystemExit(
+                      f"{entry.get('id')} has line_count="
+                      f"{entry.get('line_count')}; expected {expected_lines}"
+                  )
+              if int(job.get("line_count", 0)) != expected_lines:
+                  raise SystemExit(
+                      f"{entry.get('id')} chunk job has line_count="
+                      f"{job.get('line_count')}; expected {expected_lines}"
+                  )
+
+              signature = tuple(
+                  sorted(
+                      (
+                          str(pair["english"]).strip().casefold(),
+                          str(pair["kinyarwanda"]).strip().casefold(),
+                      )
+                      for pair in pairs
+                  )
+              )
+              if signature in seen_videos:
+                  raise SystemExit(
+                      f"duplicate sentence video signature at {entry.get('id')}"
+                  )
+              seen_videos.add(signature)
+
+          total = sum(
+              int(entry.get("pair_count", 0)) for entry in jobs
+          )
+          if total != EXPECTED_PAIRS:
+              raise SystemExit(
+                  f"manifest holds {total} pairs; expected {EXPECTED_PAIRS}"
+              )
+
+          print(
+              f"sentence database OK: {len(jobs)} videos, {total} pairs, "
+              f"{len(chunks)} chunk"
+          )
+          PY
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg
+
+      - name: Check ffmpeg
+        run: ffmpeg -version | head -n 1
+
+      - name: Pick next sentence content
+        id: pick
+        env:
+          CONTENT_ID: ${{ inputs.content_id }}
+        run: |
+          if [ -n "$CONTENT_ID" ]; then
+            python scripts/rotation.py select \
+              --manifest data/sentence_rotation_manifest.json \
+              --state data/sentence_rotation_state.json \
+              --content-id "$CONTENT_ID" \
+              --out "$RUNNER_TEMP/current_job.json" \
+              --pending "$RUNNER_TEMP/pending.json" \
+              --github-output "$GITHUB_OUTPUT"
+          else
+            python scripts/rotation.py next \
+              --manifest data/sentence_rotation_manifest.json \
+              --state data/sentence_rotation_state.json \
+              --out "$RUNNER_TEMP/current_job.json" \
+              --pending "$RUNNER_TEMP/pending.json" \
+              --github-output "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate frame + video
+        env:
+          CONTENT_ID: ${{ steps.pick.outputs.content_id }}
+        run: |
+          python generate.py \
+            --batch-json "$RUNNER_TEMP/current_job.json" \
+            --note "$NOTE" \
+            --brand "$BRAND" \
+            --duration "$DURATION" \
+            --preview "preview/${CONTENT_ID}.png" \
+            --out "output/${CONTENT_ID}.mp4" \
+            --video
+
+      # Push the mp4 before Buffer is called: Buffer fetches the video from a
+      # public URL, so the file must already exist on the default branch. The
+      # rotation state is deliberately not advanced yet; if Buffer fails, the
+      # next run repeats this same sentence video instead of skipping it.
+      - name: Commit video and preview
+        env:
+          CONTENT_ID: ${{ steps.pick.outputs.content_id }}
+          CYCLE: ${{ steps.pick.outputs.cycle }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "output/${CONTENT_ID}.mp4" "preview/${CONTENT_ID}.png"
+          if git diff --staged --quiet; then
+            echo "Video output already committed."
+          else
+            git commit -m "Add Menya sentence video ${CONTENT_ID} (cycle ${CYCLE}) ($(date -u +%Y-%m-%dT%H:%M:%SZ))"
+            git pull --rebase origin main
+            git push
+          fi
+
+      - name: Schedule TikTok post in Buffer
+        id: buffer
+        if: github.event_name == 'schedule' || inputs.content_id == ''
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          CONTENT_ID: ${{ steps.pick.outputs.content_id }}
+          CYCLE: ${{ steps.pick.outputs.cycle }}
+          VIDEO_URL: https://raw.githubusercontent.com/${{ github.repository }}/main/output/${{ steps.pick.outputs.content_id }}.mp4
+        run: |
+          if [ "$PUBLISH" != "true" ]; then
+            echo "publish=false: validating the Buffer payload without scheduling."
+            python scripts/buffer_post.py \
+              --content-id "$CONTENT_ID" \
+              --cycle "$CYCLE" \
+              --video-url "$VIDEO_URL" \
+              --post-time "$POST_TIME" \
+              --dry-run
+          else
+            python scripts/buffer_post.py \
+              --content-id "$CONTENT_ID" \
+              --cycle "$CYCLE" \
+              --video-url "$VIDEO_URL" \
+              --post-time "$POST_TIME" \
+              --ledger data/buffer_queue.json \
+              --github-output "$GITHUB_OUTPUT"
+          fi
+
+      - name: Advance sentence rotation
+        if: (github.event_name == 'schedule' || inputs.content_id == '') && inputs.publish != 'false'
+        env:
+          CONTENT_ID: ${{ steps.pick.outputs.content_id }}
+        run: |
+          python scripts/rotation.py advance \
+            --manifest data/sentence_rotation_manifest.json \
+            --state data/sentence_rotation_state.json \
+            --pending "$RUNNER_TEMP/pending.json"
+
+      - name: Commit sentence state and Buffer queue
+        if: (github.event_name == 'schedule' || inputs.content_id == '') && inputs.publish != 'false'
+        env:
+          CONTENT_ID: ${{ steps.pick.outputs.content_id }}
+          CYCLE: ${{ steps.pick.outputs.cycle }}
+          NEXT_CONTENT_ID: ${{ steps.pick.outputs.next_content_id }}
+        run: |
+          git add data/sentence_rotation_state.json data/buffer_queue.json
+          if git diff --staged --quiet; then
+            echo "Sentence state already committed."
+          else
+            git commit -m "Advance Menya sentence rotation after ${CONTENT_ID} to ${NEXT_CONTENT_ID} (cycle ${CYCLE}) ($(date -u +%Y-%m-%dT%H:%M:%SZ))"
+            git pull --rebase origin main
+            git push
+          fi
+
+      - name: Upload video
+        uses: actions/upload-artifact@v4
+        with:
+          name: menya-vocab-sentences
+          path: |
+            output/${{ steps.pick.outputs.content_id }}.mp4
+            preview/${{ steps.pick.outputs.content_id }}.png
+          if-no-files-found: error
+
+      - name: Summary
+        env:
+          CONTENT_ID: ${{ steps.pick.outputs.content_id }}
+          CONTENT_NUMBER: ${{ steps.pick.outputs.content_number }}
+          TOTAL_JOBS: ${{ steps.pick.outputs.total_jobs }}
+          PAIR_COUNT: ${{ steps.pick.outputs.pair_count }}
+          CYCLE: ${{ steps.pick.outputs.cycle }}
+          NEXT_CONTENT_ID: ${{ steps.pick.outputs.next_content_id }}
+          AUTO: ${{ steps.pick.outputs.auto }}
+          BUFFER_POST_ID: ${{ steps.buffer.outputs.buffer_post_id }}
+          BUFFER_DUE_AT: ${{ steps.buffer.outputs.buffer_due_at }}
+          BUFFER_STATUS: ${{ steps.buffer.outputs.buffer_status }}
+          BUFFER_SKIPPED: ${{ steps.buffer.outputs.buffer_skipped }}
+          POST_TIME: ${{ env.POST_TIME }}
+        run: |
+          echo "### Menya Vocab Sentences Daily" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Content:** \`$CONTENT_ID\` ($CONTENT_NUMBER/$TOTAL_JOBS, $PAIR_COUNT pairs, cycle $CYCLE)" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Daily slot:** 13:00 UTC generation / $POST_TIME Africa/Kigali publish (blank caption)." >> "$GITHUB_STEP_SUMMARY"
+          if [ "$AUTO" = "true" ]; then
+            if [ "$BUFFER_SKIPPED" = "true" ]; then
+              echo "**TikTok:** already scheduled in Buffer (post \`$BUFFER_POST_ID\`, due $BUFFER_DUE_AT); no duplicate created." >> "$GITHUB_STEP_SUMMARY"
+            elif [ -n "$BUFFER_POST_ID" ]; then
+              echo "**TikTok:** scheduled in Buffer for $BUFFER_DUE_AT with a blank caption (post \`$BUFFER_POST_ID\`, $BUFFER_STATUS)." >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "**TikTok:** Buffer scheduling did not return a post id." >> "$GITHUB_STEP_SUMMARY"
+            fi
+            echo "**Next:** \`$NEXT_CONTENT_ID\`" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "**Manual replay:** sentence rotation state not advanced; nothing was posted to TikTok." >> "$GITHUB_STEP_SUMMARY"
+          fi

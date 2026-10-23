@@ -11,6 +11,11 @@ name: Menya Vocab Words Safety Net
 
 on:
   workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Forwarded to the daily workflow. false = render-only test of this safety net.'
+        required: false
+        default: 'true'
 
 permissions:
   contents: read
@@ -39,13 +44,14 @@ jobs:
         if: steps.check.outputs.missing == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          PUBLISH: ${{ inputs.publish || 'true' }}
         run: |
           echo "No post is due today - re-dispatching menyavocab_words_daily.yml."
           gh workflow run menyavocab_words_daily.yml \
             --repo "$GITHUB_REPOSITORY" \
             --ref main \
             -f content_id= \
-            -f publish=true \
+            -f publish="$PUBLISH" \
             -f note='Iyi app yitwa "Menya Icyongereza App" wayisanga kuri Play Store yigisha icyongereza' \
             -f brand='Menya Icyongereza App' \
             -f duration=6 \

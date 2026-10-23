@@ -1,0 +1,64 @@
+name: Menya Vocab Words Safety Net
+
+# Runs 90 minutes after the primary dispatch (cron-web job #2 at 14:30
+# Africa/Kigali). If the ledger already has a post due today, the primary run
+# did its job and this exits in seconds. If it does not, the primary run
+# failed somewhere - ffmpeg, the runner, Buffer - and this re-dispatches the
+# same pipeline while there is still time to hit the 18:30 slot.
+#
+# This is deliberately a separate workflow: the primary one stays simple, and
+# the retry path has its own logs and history.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: menya-vocab-words-safety
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check whether today already has a post
+        id: check
+        run: |
+          python scripts/check_today_post.py \
+            --ledger data/buffer_queue.json \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Re-dispatch the daily pipeline
+        if: steps.check.outputs.missing == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "No post is due today - re-dispatching menyavocab_words_daily.yml."
+          gh workflow run menyavocab_words_daily.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref main \
+            -f content_id= \
+            -f publish=true \
+            -f note='Iyi app yitwa "Menya Icyongereza App" wayisanga kuri Play Store yigisha icyongereza' \
+            -f brand='Menya Icyongereza App' \
+            -f duration=6 \
+            -f post_time=18:30
+
+      - name: Summary
+        env:
+          MISSING: ${{ steps.check.outputs.missing }}
+        run: |
+          echo "### Safety net" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$MISSING" = "true" ]; then
+            echo "No post due today - the daily pipeline was re-dispatched." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Today is already covered by the ledger - nothing to do." >> "$GITHUB_STEP_SUMMARY"
+          fi

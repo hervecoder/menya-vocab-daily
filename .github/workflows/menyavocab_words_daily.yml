@@ -301,7 +301,7 @@ jobs:
                 --github-output "$GITHUB_OUTPUT"
             fi
 
-            CONTENT_ID=$(python -c "import json,os;print(json.load(open(os.environ['CURRENT_JOB']))['id'])")
+            CONTENT_ID=$(python -c "import json,os;print(json.load(open(os.environ['CURRENT_JOB']))['videos'][0]['id'])")
             CYCLE=$(python -c "import json;print(json.load(open('data/rotation_state.json'))['cycle'])")
             LAST_ID="$CONTENT_ID"
             echo "content: $CONTENT_ID (cycle $CYCLE)"

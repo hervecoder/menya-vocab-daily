@@ -1,13 +1,13 @@
 {
   "cycle": 1,
-  "next_job_index": 4,
-  "jobs_done_in_cycle": 4,
+  "next_job_index": 5,
+  "jobs_done_in_cycle": 5,
   "total_jobs": 1098,
   "total_entries": 7686,
   "input_entries": 7686,
   "remainder_entries": 0,
   "excluded_unverified_entries": 0,
-  "last_content_id": "content_0004",
-  "next_content_id": "content_0005",
-  "updated_at": "2026-10-21T22:58:16Z"
+  "last_content_id": "content_0005",
+  "next_content_id": "content_0006",
+  "updated_at": "2026-10-23T19:51:36Z"
 }

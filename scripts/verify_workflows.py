@@ -1,6 +1,6 @@
-"""Parse both workflows and assert the trigger contract.
+"""Parse the workflows and assert the contract that keeps the channel safe.
 
-No network. Fails loudly on YAML errors or on a trigger that could double-post.
+No network. Fails loudly on YAML errors, a second trigger, or a broken order.
 """
 import sys
 from pathlib import Path
@@ -20,63 +20,102 @@ def check(label, cond, detail=""):
         print(f"  FAIL {label}  -> {detail}")
 
 
-print("WORKFLOW YAML")
-for name in ("menyavocab_words_daily.yml", "menyavocab_sentences_daily.yml"):
+def load(name):
     path = ROOT / ".github" / "workflows" / name
     try:
         doc = yaml.safe_load(path.read_text(encoding="utf-8"))
-        check(f"{name} parses", isinstance(doc, dict))
     except Exception as exc:  # noqa: BLE001
-        doc = None
         check(f"{name} parses", False, str(exc))
-    if not doc:
-        continue
+        return None
+    check(f"{name} parses", isinstance(doc, dict))
+    return doc
 
+
+def triggers_of(doc):
     # PyYAML turns the bare `on:` key into True, so look for either spelling.
-    triggers = doc.get("on", doc.get(True))
-    keys = set(triggers or {}) if isinstance(triggers, dict) else set()
-    print(f"       {name}: triggers={sorted(map(str, keys))}")
+    trig = doc.get("on", doc.get(True))
+    return set(trig or {}) if isinstance(trig, dict) else set()
 
-    has_schedule = "schedule" in keys
-    has_dispatch = "workflow_dispatch" in keys
-    check(f"{name} has workflow_dispatch", has_dispatch)
-    check(f"{name} has NO schedule trigger", not has_schedule, "would double-post")
 
+def steps_of(doc):
     job = (doc.get("jobs") or {}).get("build") or {}
-    steps = job.get("steps") or []
+    return job.get("steps") or []
+
+
+print("WORDS")
+words = load("menyavocab_words_daily.yml")
+if words:
+    keys = triggers_of(words)
+    check("no schedule trigger", "schedule" not in keys, "would double-post")
+    check("has workflow_dispatch", "workflow_dispatch" in keys)
+
+    inputs = (words.get("on", words.get(True)) or {}).get("workflow_dispatch", {}).get("inputs", {})
+    for key in ("content_id", "publish", "note", "brand", "duration", "post_time", "count"):
+        check(f"declares input '{key}'", key in inputs)
+
+    steps = steps_of(words)
     names = [s.get("name", "") for s in steps]
-    check(f"{name} has a Buffer step", any("Buffer" in n for n in names))
-    check(f"{name} commits the video before Buffer", any("Commit video" in n for n in names))
-    check(f"{name} advances rotation after Buffer", any("Advance" in n for n in names))
-    check(f"{name} runs on ubuntu", job.get("runs-on") == "ubuntu-latest")
+    ids = {s.get("id"): s for s in steps if s.get("id")}
 
-    # Critical ordering: Buffer must come after the mp4 commit and before advance.
-    idx_commit = next(i for i, n in enumerate(names) if "Commit video" in n)
-    idx_buffer = next(
-        i for i, n in enumerate(names) if n.startswith("Schedule") and "Buffer" in n
-    )
-    idx_advance = next(i for i, n in enumerate(names) if "Advance" in n)
+    check("has the plan step", "plan" in ids)
+    check("has the render loop", "run" in ids)
+
+    plan = str(ids.get("plan", {}).get("run", ""))
+    check("plan calls queue_status.py", "queue_status.py" in plan)
+    check("plan honours an explicit count", "add=$COUNT" in plan)
+    check("dry runs render a single video", 'add=1' in plan and "publish" in plan.lower())
+
+    runner = str(ids.get("run", {}).get("run", ""))
+    check("loop calls rotation.py next", "rotation.py next" in runner)
+    check("loop calls buffer_post.py", "buffer_post.py" in runner)
+    check("loop calls rotation.py advance", "rotation.py advance" in runner)
+    check("loop honours the replay id", "rotation.py select" in runner)
     check(
-        f"{name} order commit < buffer < advance",
-        idx_commit < idx_buffer < idx_advance,
-        f"{idx_commit} / {idx_buffer} / {idx_advance}",
+        "buffer runs before advance",
+        runner.index("buffer_post.py") < runner.index("rotation.py advance"),
+        "advancing first would skip a video on a Buffer failure",
+    )
+    check("loop is gated on add", ids.get("run", {}).get("if") == "steps.plan.outputs.add != '0'")
+
+    body = str(steps)
+    check("reads the word manifest", "rotation_manifest.json" in body)
+    check("never reads the sentence manifest", "sentence_rotation_manifest" not in body)
+
+    ffmpeg = next((s for s in steps if s.get("name") == "Install ffmpeg"), {})
+    ff = str(ffmpeg.get("run", ""))
+    check("ffmpeg avoids apt-get update", "apt-get update" not in ff)
+    check("ffmpeg uses a static build", "imageio-ffmpeg" in ff)
+    check("ffmpeg smoke-tests libx264", "libx264" in ff)
+
+    env = (words.get("jobs") or {}).get("build", {}).get("env") or {}
+    for key in ("NOTE", "BRAND", "DURATION", "POST_TIME", "PUBLISH", "COUNT"):
+        check(f"env {key} has a fallback", "||" in str(env.get(key, "")))
+
+print("\nSAFETY NET")
+safety = load("menyavocab_words_safety.yml")
+if safety:
+    keys = triggers_of(safety)
+    check("no schedule trigger", "schedule" not in keys)
+    check("has workflow_dispatch", "workflow_dispatch" in keys)
+
+    steps = (safety.get("jobs") or {}).get("check", {}).get("steps") or []
+    body = str(steps)
+    check("reads the queue depth", "queue_status.py" in body)
+    check("re-dispatches the daily workflow", "gh workflow run menyavocab_words_daily.yml" in body)
+    check("forwards count", "-f count=" in body)
+    check(
+        "can dispatch workflows",
+        (safety.get("permissions") or {}).get("actions") == "write",
     )
 
-    if "words" in name:
-        env = job.get("env") or {}
-        for key in ("NOTE", "BRAND", "DURATION", "POST_TIME", "PUBLISH"):
-            check(f"{name} env {key} has a fallback", "||" in str(env.get(key, "")))
-        inputs = (triggers or {}).get("workflow_dispatch", {}).get("inputs", {})
-        for key in ("content_id", "publish", "note", "brand", "duration", "post_time"):
-            check(f"{name} declares input '{key}'", key in inputs)
-        check(
-            f"{name} reads the word manifest",
-            any("rotation_manifest.json" in str(s) for s in steps),
-        )
-        check(
-            f"{name} never reads the sentence manifest",
-            not any("sentence_rotation_manifest" in str(s) for s in steps),
-        )
+print("\nSENTENCES (paused)")
+sent = load("menyavocab_sentences_daily.yml")
+if sent:
+    keys = triggers_of(sent)
+    check("no schedule trigger", "schedule" not in keys, "sentences are parked")
+    check("still manually runnable", "workflow_dispatch" in keys)
+    names = [s.get("name", "") for s in steps_of(sent)]
+    check("keeps its Buffer step", any("Buffer" in n for n in names))
 
 print()
 print(f"{fail} failed")

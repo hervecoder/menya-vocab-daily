@@ -1,10 +1,9 @@
 name: Menya Vocab Words Safety Net
 
 # Runs 90 minutes after the primary dispatch (cron-web job #2 at 14:30
-# Africa/Kigali). If the ledger already has a post due today, the primary run
-# did its job and this exits in seconds. If it does not, the primary run
-# failed somewhere - ffmpeg, the runner, Buffer - and this re-dispatches the
-# same pipeline while there is still time to hit the 18:30 slot.
+# Africa/Kigali). It asks the same question the daily job asks - how deep is
+# the Buffer queue? - and re-dispatches the top-up only when the queue is
+# short. On a healthy day it exits in seconds.
 #
 # This is deliberately a separate workflow: the primary one stays simple, and
 # the retry path has its own logs and history.
@@ -16,6 +15,10 @@ on:
         description: 'Forwarded to the daily workflow. false = render-only test of this safety net.'
         required: false
         default: 'true'
+      count:
+        description: 'Forwarded to the daily workflow ("auto" tops the queue up to five).'
+        required: false
+        default: 'auto'
 
 permissions:
   contents: read
@@ -30,28 +33,33 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
+    env:
+      PUBLISH: ${{ inputs.publish || 'true' }}
+      COUNT: ${{ inputs.count || 'auto' }}
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check whether today already has a post
+      - name: Check the queue depth
         id: check
         run: |
-          python scripts/check_today_post.py \
+          python scripts/queue_status.py \
             --ledger data/buffer_queue.json \
+            --target 5 \
             --github-output "$GITHUB_OUTPUT"
 
       - name: Re-dispatch the daily pipeline
-        if: steps.check.outputs.missing == 'true'
+        if: steps.check.outputs.add != '0'
         env:
           GH_TOKEN: ${{ github.token }}
-          PUBLISH: ${{ inputs.publish || 'true' }}
         run: |
-          echo "No post is due today - re-dispatching menyavocab_words_daily.yml."
+          echo "Queue is ${{ steps.check.outputs.add }} short - re-dispatching the top-up."
           gh workflow run menyavocab_words_daily.yml \
             --repo "$GITHUB_REPOSITORY" \
             --ref main \
             -f content_id= \
             -f publish="$PUBLISH" \
+            -f count="$COUNT" \
             -f note='Iyi app yitwa "Menya Icyongereza App" wayisanga kuri Play Store yigisha icyongereza' \
             -f brand='Menya Icyongereza App' \
             -f duration=6 \
@@ -59,12 +67,14 @@ jobs:
 
       - name: Summary
         env:
-          MISSING: ${{ steps.check.outputs.missing }}
+          ADD: ${{ steps.check.outputs.add }}
+          DEPTH: ${{ steps.check.outputs.depth }}
         run: |
           echo "### Safety net" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          if [ "$MISSING" = "true" ]; then
-            echo "No post due today - the daily pipeline was re-dispatched." >> "$GITHUB_STEP_SUMMARY"
+          echo "**Queue depth:** ${DEPTH:-?} / 5" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${ADD:-0}" != "0" ]; then
+            echo "Queue was ${ADD} short - the daily pipeline was re-dispatched." >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "Today is already covered by the ledger - nothing to do." >> "$GITHUB_STEP_SUMMARY"
+            echo "Queue is full - nothing to do." >> "$GITHUB_STEP_SUMMARY"
           fi

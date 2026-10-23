@@ -213,6 +213,56 @@ def next_due_at(raw_time: str, tz_name: str, lead_minutes: int) -> datetime:
     return candidate.astimezone(timezone.utc)
 
 
+def ledger_due_dates(path: Path, tz) -> set:
+    """Kigali dates already occupied by a live post in the ledger."""
+    if not path.exists():
+        return set()
+    try:
+        payload = read_json(path)
+    except (OSError, ValueError):
+        return set()
+    dates = set()
+    for post in payload.get("posts") or []:
+        if str(post.get("status", "")).lower() == "failed":
+            continue
+        due_at = post.get("due_at")
+        if not due_at:
+            continue
+        try:
+            when = datetime.fromisoformat(str(due_at).replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if when.tzinfo is None:
+            when = when.replace(tzinfo=timezone.utc)
+        dates.add(when.astimezone(tz).date())
+    return dates
+
+
+def first_free_due_at(
+    raw_time: str, tz_name: str, lead_minutes: int, ledger: Path
+) -> datetime:
+    """Earliest daily slot no ledger post already occupies.
+
+    This is what makes a preloaded queue safe. With five posts already
+    sitting in Buffer, a new run lands on the sixth day instead of stacking
+    a second video onto tomorrow. It also fills a gap: if today's slot is
+    missing, today is chosen.
+    """
+    hour, minute = parse_post_time(raw_time)
+    tz = zone_for(tz_name)
+    current = datetime.now(timezone.utc).astimezone(tz)
+    candidate = current.replace(hour=hour, minute=minute, second=0, microsecond=0)
+    if candidate <= current + timedelta(minutes=lead_minutes):
+        candidate += timedelta(days=1)
+
+    taken = ledger_due_dates(ledger, tz)
+    hops = 0
+    while candidate.date() in taken and hops < 400:
+        candidate += timedelta(days=1)
+        hops += 1
+    return candidate.astimezone(timezone.utc)
+
+
 def iso_z(value: datetime) -> str:
     return value.astimezone(timezone.utc).isoformat(timespec="seconds").replace(
         "+00:00", "Z"
@@ -561,7 +611,9 @@ def main() -> None:
         )
 
     timezone_name = args.timezone or channel.get("timezone") or "Africa/Kigali"
-    due_at = next_due_at(args.post_time, timezone_name, args.lead_minutes)
+    due_at = first_free_due_at(
+        args.post_time, timezone_name, args.lead_minutes, args.ledger
+    )
     due_at_text = iso_z(due_at)
 
     print(

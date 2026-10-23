@@ -25,20 +25,50 @@ fonts/background/music assets and the same `data/buffer_queue.json` ledger
 
 ## How it works
 
+The daily job is a **queue top-up worker**, not a one-shot publisher. Buffer
+always holds five future posts; a run adds exactly as many as are missing.
+
 | Step | Detail |
 |---|---|
 | Trigger | Cloudflare cron-web POSTs `workflow_dispatch` at `0 13 * * *` — 13:00 Africa/Kigali (11:00 UTC) |
+| Plan | `scripts/queue_status.py` counts future posts and prints `add = 5 - depth` |
 | Pick | `scripts/rotation.py next` selects the next word video and writes a pending marker |
 | Render | `generate.py` draws the 1080×1920 frame and encodes the mp4 |
 | Commit | `output/<id>.mp4` + `preview/<id>.png` are pushed **before** Buffer is called |
 | Publish | `scripts/buffer_post.py` creates a Buffer post with `text: ""` and `mode: customScheduled` |
 | Advance | Rotation advances **only after** Buffer accepts the post |
-| Time | 18:30 Africa/Kigali |
+| Time | 18:30 Africa/Kigali, on the first free day |
 | Caption | Empty, matching the channel's previous posts |
+
+Plan → pick → render → commit → publish → advance runs in a loop, `add` times,
+inside one job. A cold start fills all five in a single run (~70 s); a normal
+day adds one; if three days of runs fail, the next run adds three and the
+buffer is whole again instead of limping along one day at a time.
 
 The commit → publish → advance order is deliberate. If Buffer fails, the
 rotation is not advanced, so the next run repeats the same video instead of
 silently skipping it.
+
+### Five posts ahead
+
+`data/buffer_queue.json` is the source of truth for the queue. `queue_status.py`
+reports:
+
+```
+depth = posts whose due_at is still in the future (failed posts excluded)
+add   = max(0, 5 - depth)
+```
+
+Scheduling uses the **first free day**, not "today or tomorrow": Kigali dates
+already occupied by a live ledger post are skipped. With five posts queued, a
+new run lands on the sixth day; if a day is missing, that day is filled.
+
+On 2026-10-23 the queue was preloaded with `content_0005` … `content_0009` for
+24–28 October 2026, and the rotation moved to `content_0010`.
+
+The 14:30 safety net asks the same depth question and re-dispatches the top-up
+only when the queue is short, so a failed primary run is retried without
+touching a healthy queue.
 
 ### ffmpeg
 
@@ -65,7 +95,11 @@ days it did fire, producing two videos and two posts.
 - Its own Cloudflare cron trigger is `*/1 * * * *` (see that repo's `wrangler.toml`).
 - Job id `1` holds the daily dispatch to **`menyavocab_words_daily.yml`**.
   Its `body` carries every input explicitly, including `content_id: ""`
-  which means "auto-next word video".
+  which means "auto-next word video". `count` is omitted so the workflow
+  defaults to `auto` (top the queue up to five).
+- Job id `2` runs at `30 14 * * *` and dispatches
+  `menyavocab_words_safety.yml`, which re-dispatches the daily workflow only
+  when the queue depth is below five.
 - The GitHub token lives in the job's `headers` field, readable only with the
   cron-web key (`D:\kinyarwnda\AI AGENT\cron-web-token.txt`).
 
@@ -93,7 +127,7 @@ again from `content_0001`. The database is validated on every run:
 - 4 chunks, 7 pairs per video, no word repeated inside a video
 - no word shared with the immediately preceding video
 
-- `data/rotation_state.json` — next content and cycle (currently `content_0005`).
+- `data/rotation_state.json` — next content and cycle (currently `content_0010`).
 - `data/rotation_manifest.json` — the 1098 ordered jobs.
 - `data/chunks/vocabulary_chunk_0{1..4}.json` — the pair data.
 - `data/buffer_queue.json` — Buffer post ids and due times (idempotency ledger).
@@ -152,8 +186,12 @@ python scripts/verify_workflows.py   # YAML parses; no schedule; step order
 ## Manual runs
 
 **Actions → Menya Vocab Words Daily → Run workflow.** Leave every field as-is
-to publish the next word video, or set `publish` to `false` to render and
-validate the Buffer payload without scheduling anything.
+to top the queue back up to five, or set `publish` to `false` to render and
+validate one video without scheduling anything.
+
+`count` controls the batch: `auto` (default) adds only what is missing, while a
+number forces exactly that many videos in one run — useful for a deliberate
+preload.
 
 `content_id` replays one specific video; a replay is never posted to Buffer, so
 it cannot create a duplicate.

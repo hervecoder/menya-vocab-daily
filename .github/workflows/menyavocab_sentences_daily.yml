@@ -1,7 +1,14 @@
-name: Menya Vocab Sentences Daily
+name: Menya Vocab Sentences (maintenance — paused)
 
-# Daily publisher for the Menya Icyongereza TikTok channel (@perime.rw250).
+# PAUSED FOR A QUALITY UPGRADE.
 #
+# The daily TikTok slot now runs the WORD track (menyavocab_words_daily.yml,
+# dispatched by Cloudflare cron-web). This workflow is kept for manual
+# replays only while the sentence layout, pacing and copy are reworked.
+# It deliberately has no `schedule:` trigger, so it can never double-post
+# alongside the word track.
+#
+# Original notes, still true for manual runs:
 # This repository is standalone on purpose: GitHub does not fire the
 # `schedule` trigger on public forks, so the daily job cannot live in a fork
 # of the upstream content repo. It renders one sentence video, commits the
@@ -12,8 +19,6 @@ name: Menya Vocab Sentences Daily
 # Buffer post ids in data/buffer_queue.json, both committed after a
 # successful publish.
 on:
-  schedule:
-    - cron: '0 13 * * *'
   workflow_dispatch:
     inputs:
       content_id:

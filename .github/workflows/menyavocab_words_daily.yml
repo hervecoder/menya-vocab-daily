@@ -1,0 +1,325 @@
+name: Menya Vocab Words Daily
+
+# Daily publisher for the Menya Icyongereza TikTok channel (@perime.rw250).
+#
+# This is the WORD track: exactly 7 English -> Kinyarwanda pairs per video,
+# picked from the 1098-video rotation in data/rotation_manifest.json.
+#
+# Trigger: Cloudflare cron-web dispatches this workflow once a day at 13:00
+# Africa/Kigali. There is deliberately NO `schedule:` trigger here - GitHub's
+# scheduler is unreliable on this account, and having both would double-post
+# on the days it does fire. cron-web is the single source of truth.
+#
+# Order matters: the mp4 is committed first (Buffer fetches it from a public
+# raw URL), then Buffer is scheduled, and only then is the rotation advanced.
+# If Buffer fails the next run repeats the same video instead of skipping it.
+on:
+  workflow_dispatch:
+    inputs:
+      content_id:
+        description: 'Optional replay id (e.g. content_0005). Leave empty for auto-next.'
+        required: false
+        default: ''
+      publish:
+        description: 'Set false to render and validate without scheduling on Buffer.'
+        required: false
+        default: 'true'
+      note:
+        description: 'Yellow box text. The brand name is highlighted in green.'
+        required: true
+        default: 'Iyi app yitwa "Menya Icyongereza App" wayisanga kuri Play Store yigisha icyongereza'
+      brand:
+        description: 'Text to highlight green inside the note'
+        required: false
+        default: 'Menya Icyongereza App'
+      duration:
+        description: 'Video length in seconds'
+        required: false
+        default: '6'
+      post_time:
+        description: 'TikTok publish time in Africa/Kigali (HH:MM, after 15:00)'
+        required: false
+        default: '18:30'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: menya-vocab-words-daily
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      # A dispatch may omit inputs; every value needs an explicit fallback.
+      NOTE: ${{ inputs.note || 'Iyi app yitwa "Menya Icyongereza App" wayisanga kuri Play Store yigisha icyongereza' }}
+      BRAND: ${{ inputs.brand || 'Menya Icyongereza App' }}
+      DURATION: ${{ inputs.duration || '6' }}
+      POST_TIME: ${{ inputs.post_time || '18:30' }}
+      PUBLISH: ${{ inputs.publish || 'true' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Check Buffer secret
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+        run: |
+          if [ -z "$BUFFER_API_KEY" ]; then
+            echo "::error::BUFFER_API_KEY repository secret is not set."
+            exit 1
+          fi
+
+      - name: Validate word rotation database
+        run: |
+          python - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          EXPECTED_VIDEOS = 1098
+          EXPECTED_CHUNKS = 4
+          EXPECTED_PAIRS = 7
+
+          manifest_path = Path("data/rotation_manifest.json")
+          if not manifest_path.exists():
+              raise SystemExit("data/rotation_manifest.json is missing")
+          manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+          jobs = manifest.get("jobs") or []
+          chunks = manifest.get("chunks") or []
+
+          if len(jobs) != EXPECTED_VIDEOS:
+              raise SystemExit(
+                  f"rotation database has {len(jobs)} jobs; "
+                  f"expected {EXPECTED_VIDEOS}"
+              )
+          if len(chunks) != EXPECTED_CHUNKS:
+              raise SystemExit(
+                  f"rotation database has {len(chunks)} chunks; "
+                  f"expected {EXPECTED_CHUNKS}"
+              )
+          if manifest.get("meta", {}).get("unique_videos") != EXPECTED_VIDEOS:
+              raise SystemExit("manifest does not report 1098 unique videos")
+
+          chunk_cache = {}
+          seen = set()
+          previous_words = None
+          for index, entry in enumerate(jobs):
+              chunk_id = int(entry["chunk_id"])
+              chunk = chunk_cache.get(chunk_id)
+              if chunk is None:
+                  chunk_path = manifest_path.parent / chunks[chunk_id - 1]["file"]
+                  if not chunk_path.exists():
+                      raise SystemExit(f"missing chunk file: {chunk_path}")
+                  chunk = json.loads(chunk_path.read_text(encoding="utf-8"))
+                  chunk_cache[chunk_id] = chunk
+              job = chunk["jobs"][int(entry["job_index"])]
+              if job.get("id") != entry.get("id"):
+                  raise SystemExit(
+                      f"job mismatch at {index}: {entry.get('id')} != {job.get('id')}"
+                  )
+              pairs = job.get("pairs") or []
+              if len(pairs) != EXPECTED_PAIRS:
+                  raise SystemExit(
+                      f"{entry.get('id')} has {len(pairs)} pairs; "
+                      f"expected {EXPECTED_PAIRS}"
+                  )
+              signature = tuple(
+                  sorted(
+                      (
+                          str(pair["english"]).strip().casefold(),
+                          str(pair["kinyarwanda"]).strip().casefold(),
+                      )
+                      for pair in pairs
+                  )
+              )
+              if signature in seen:
+                  raise SystemExit(f"duplicate video signature at {entry.get('id')}")
+              seen.add(signature)
+
+              words = {
+                  str(pair["english"]).strip().casefold() for pair in pairs
+              }
+              if len(words) != EXPECTED_PAIRS:
+                  raise SystemExit(f"{entry.get('id')} repeats a word")
+              if previous_words is not None and index >= 10:
+                  overlap = previous_words & words
+                  if overlap:
+                      raise SystemExit(
+                          f"{entry.get('id')} shares words with the previous "
+                          f"video: {sorted(overlap)}"
+                      )
+              previous_words = words
+
+          state_path = Path("data/rotation_state.json")
+          if not state_path.exists():
+              raise SystemExit("data/rotation_state.json is missing")
+          state = json.loads(state_path.read_text(encoding="utf-8"))
+          if int(state.get("total_jobs", 0)) != EXPECTED_VIDEOS:
+              raise SystemExit("rotation state total_jobs does not match the manifest")
+
+          print(
+              f"database OK: {len(jobs)} unique 7-word videos, "
+              f"{len(chunks)} chunks, next {state.get('next_content_id')}"
+          )
+          PY
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg
+
+      - name: Check ffmpeg
+        run: ffmpeg -version | head -n 1
+
+      - name: Pick next word content
+        id: pick
+        env:
+          CONTENT_ID: ${{ inputs.content_id }}
+        run: |
+          if [ -n "$CONTENT_ID" ]; then
+            python scripts/rotation.py select \
+              --manifest data/rotation_manifest.json \
+              --state data/rotation_state.json \
+              --content-id "$CONTENT_ID" \
+              --out "$RUNNER_TEMP/current_job.json" \
+              --pending "$RUNNER_TEMP/pending.json" \
+              --github-output "$GITHUB_OUTPUT"
+          else
+            python scripts/rotation.py next \
+              --manifest data/rotation_manifest.json \
+              --state data/rotation_state.json \
+              --out "$RUNNER_TEMP/current_job.json" \
+              --pending "$RUNNER_TEMP/pending.json" \
+              --github-output "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate frame + video
+        env:
+          CONTENT_ID: ${{ steps.pick.outputs.content_id }}
+        run: |
+          python generate.py \
+            --batch-json "$RUNNER_TEMP/current_job.json" \
+            --note "$NOTE" \
+            --brand "$BRAND" \
+            --duration "$DURATION" \
+            --preview "preview/${CONTENT_ID}.png" \
+            --out "output/${CONTENT_ID}.mp4" \
+            --video
+
+      - name: Commit video and preview
+        env:
+          CONTENT_ID: ${{ steps.pick.outputs.content_id }}
+          CYCLE: ${{ steps.pick.outputs.cycle }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "output/${CONTENT_ID}.mp4" "preview/${CONTENT_ID}.png"
+          if git diff --staged --quiet; then
+            echo "Video output already committed."
+          else
+            git commit -m "Add Menya word video ${CONTENT_ID} (cycle ${CYCLE}) ($(date -u +%Y-%m-%dT%H:%M:%SZ))"
+            git pull --rebase origin main
+            git push
+          fi
+
+      - name: Schedule TikTok post in Buffer
+        id: buffer
+        if: inputs.content_id == ''
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          CONTENT_ID: ${{ steps.pick.outputs.content_id }}
+          CYCLE: ${{ steps.pick.outputs.cycle }}
+          VIDEO_URL: https://raw.githubusercontent.com/${{ github.repository }}/main/output/${{ steps.pick.outputs.content_id }}.mp4
+        run: |
+          if [ "$PUBLISH" != "true" ]; then
+            echo "publish=false: validating the Buffer payload without scheduling."
+            python scripts/buffer_post.py \
+              --content-id "$CONTENT_ID" \
+              --cycle "$CYCLE" \
+              --video-url "$VIDEO_URL" \
+              --post-time "$POST_TIME" \
+              --dry-run
+          else
+            python scripts/buffer_post.py \
+              --content-id "$CONTENT_ID" \
+              --cycle "$CYCLE" \
+              --video-url "$VIDEO_URL" \
+              --post-time "$POST_TIME" \
+              --ledger data/buffer_queue.json \
+              --github-output "$GITHUB_OUTPUT"
+          fi
+
+      - name: Advance word rotation
+        if: inputs.content_id == '' && inputs.publish != 'false'
+        env:
+          CONTENT_ID: ${{ steps.pick.outputs.content_id }}
+        run: |
+          python scripts/rotation.py advance \
+            --manifest data/rotation_manifest.json \
+            --state data/rotation_state.json \
+            --pending "$RUNNER_TEMP/pending.json"
+
+      - name: Commit word state and Buffer queue
+        if: inputs.content_id == '' && inputs.publish != 'false'
+        env:
+          CONTENT_ID: ${{ steps.pick.outputs.content_id }}
+          CYCLE: ${{ steps.pick.outputs.cycle }}
+          NEXT_CONTENT_ID: ${{ steps.pick.outputs.next_content_id }}
+        run: |
+          git add data/rotation_state.json data/buffer_queue.json
+          if git diff --staged --quiet; then
+            echo "Word state already committed."
+          else
+            git commit -m "Advance Menya word rotation after ${CONTENT_ID} to ${NEXT_CONTENT_ID} (cycle ${CYCLE}) ($(date -u +%Y-%m-%dT%H:%M:%SZ))"
+            git pull --rebase origin main
+            git push
+          fi
+
+      - name: Upload video
+        uses: actions/upload-artifact@v4
+        with:
+          name: menya-vocab-words
+          path: |
+            output/${{ steps.pick.outputs.content_id }}.mp4
+            preview/${{ steps.pick.outputs.content_id }}.png
+          if-no-files-found: error
+
+      - name: Summary
+        env:
+          CONTENT_ID: ${{ steps.pick.outputs.content_id }}
+          CONTENT_NUMBER: ${{ steps.pick.outputs.content_number }}
+          TOTAL_JOBS: ${{ steps.pick.outputs.total_jobs }}
+          MODE: ${{ steps.pick.outputs.mode }}
+          PAIR_COUNT: ${{ steps.pick.outputs.pair_count }}
+          CYCLE: ${{ steps.pick.outputs.cycle }}
+          NEXT_CONTENT_ID: ${{ steps.pick.outputs.next_content_id }}
+          AUTO: ${{ steps.pick.outputs.auto }}
+          SCHEDULED_AT: ${{ steps.buffer.outputs.due_at }}
+        run: |
+          echo "### Menya Vocab Words" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Database:** 1098 unique 7-word videos (4 chunks)" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Content:** \`$CONTENT_ID\` ($CONTENT_NUMBER/$TOTAL_JOBS, $MODE, $PAIR_COUNT pairs)" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Cycle:** $CYCLE" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$AUTO" = "true" ]; then
+            echo "**Next:** \`$NEXT_CONTENT_ID\`" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "**Manual replay:** rotation state not advanced." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -n "$SCHEDULED_AT" ]; then
+            echo "**Buffer:** scheduled for $SCHEDULED_AT" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "**Video:** \`output/$CONTENT_ID.mp4\`" >> "$GITHUB_STEP_SUMMARY"

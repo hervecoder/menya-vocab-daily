@@ -272,6 +272,7 @@ jobs:
         env:
           ADD: ${{ steps.plan.outputs.add }}
           DO_BUFFER: ${{ steps.plan.outputs.buffer }}
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"

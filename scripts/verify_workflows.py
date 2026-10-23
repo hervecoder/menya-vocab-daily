@@ -76,6 +76,11 @@ if words:
         "advancing first would skip a video on a Buffer failure",
     )
     check("loop is gated on add", ids.get("run", {}).get("if") == "steps.plan.outputs.add != '0'")
+    check(
+        "loop exposes the Buffer secret",
+        "BUFFER_API_KEY" in (ids.get("run", {}).get("env") or {}),
+        "buffer_post.py would exit on a missing key",
+    )
 
     body = str(steps)
     check("reads the word manifest", "rotation_manifest.json" in body)

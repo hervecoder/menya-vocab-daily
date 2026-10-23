@@ -7,20 +7,46 @@ Every day it renders one sentence video, commits the mp4 so Buffer can fetch
 it over a public raw URL, and schedules the post on TikTok for **18:30
 Africa/Kigali** with a **blank caption**.
 
-> Why a standalone repo? GitHub does not fire the `schedule` trigger on public
-> forks, so the daily job cannot live in a fork of the upstream content repo
-> (`primeherve/menya-vocab-video`). This repository is not a fork, so the cron
-> trigger genuinely runs.
-
 ## How it works
 
 | Step | Detail |
 |---|---|
-| Trigger | `schedule` cron `0 13 * * *` (13:00 UTC = 15:00 Africa/Kigali) |
+| Trigger | A Cloudflare Worker cron (`cron-web`) POSTs to this repo's `workflow_dispatch` API at `0 13 * * *` — 13:00 Africa/Kigali (11:00 UTC) |
 | Render | `generate.py` draws the 1080×1920 frame and encodes the mp4 |
 | Publish | `scripts/buffer_post.py` creates a Buffer post with `text: ""` and `mode: customScheduled` |
 | Time | 18:30 Africa/Kigali (the slot the existing TikTok posts used) |
 | Caption | Empty, matching the channel's previous posts |
+
+### Why the trigger is not GitHub's cron
+
+GitHub's `schedule` event is **unreliable on this account**, fork or not. A
+`*/5` probe in this repository produced only 2 runs across ~5.5 hours — roughly
+a 30x shortfall. The `schedule` block below is retained as a harmless fallback,
+but the live trigger is an external scheduler.
+
+The external scheduler is `cron-web`, deployed on the Cloudflare Worker
+`ytcommentmanager.ndatimanah.workers.dev`:
+
+- Its own Cloudflare cron trigger is `*/1 * * * *` (see that repo's `wrangler.toml`).
+- Job id `1` holds the daily dispatch. Its `body` carries every workflow input
+  explicitly, including `content_id: ""` which means "auto-next sentence".
+- The GitHub token lives in the job's `headers` field, readable only with the
+  cron-web key (`D:\kinyarwnda\AI AGENT\cron-web-token.txt`).
+
+To inspect or edit it: open `https://ytcommentmanager.ndatimanah.workers.dev/cron?key=<key>`
+or call `GET /cron/api/jobs` with the `x-cron-key` header.
+
+### Endpoint note
+
+The dispatch URL must be the *workflow* path:
+
+```
+https://api.github.com/repos/hervecoder/menya-vocab-daily/actions/workflows/menyavocab_sentences_daily.yml/dispatches
+```
+
+`POST /repos/{owner}/{repo}/dispatches` is a different endpoint
+(`repository_dispatch`): it rejects `ref`/`inputs`, demands `event_type`, and
+returns `422`. A correct workflow dispatch returns **`204 No Content`**.
 
 ## Rotation
 

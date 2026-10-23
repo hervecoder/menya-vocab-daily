@@ -40,6 +40,19 @@ The commit → publish → advance order is deliberate. If Buffer fails, the
 rotation is not advanced, so the next run repeats the same video instead of
 silently skipping it.
 
+### ffmpeg
+
+The `ubuntu-24.04` runner image has **no ffmpeg**, and installing it with apt
+pulls 99 packages / 94 MB from `azure.archive.ubuntu.com`. On 2026-10-23 that
+mirror crawled and a 300 s cap killed the daily run (exit 124), losing the
+post.
+
+The workflows therefore never call apt. They install `imageio-ffmpeg` from
+PyPI — one ~30 MB wheel — and symlink its static binary onto `PATH`, falling
+back to the BtbN GPL static build from GitHub releases. Both paths must pass a
+real `libx264` smoke encode, so a broken binary fails in seconds rather than
+at render time.
+
 ### Triggers are explicit, never doubled
 
 Neither workflow declares a `schedule:` block. GitHub's `schedule` event is

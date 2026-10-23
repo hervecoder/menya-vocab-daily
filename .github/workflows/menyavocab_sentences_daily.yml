@@ -215,22 +215,45 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # This runner image does NOT ship ffmpeg. `apt-get update` is the step
-      # that stalled for 20+ minutes on this pool, and the image already has a
-      # usable package index - so install straight from the cache first and
-      # only refresh the index if that fails. Every network op is bounded.
+      # The ubuntu-24.04 image ships no ffmpeg. apt then pulls 99 packages /
+      # 94 MB from azure.archive.ubuntu.com, which crawled on 2026-10-23 and
+      # blew a 300 s cap (exit 124). Use a static binary instead: one wheel
+      # from the PyPI CDN, else the full GPL build from the GitHub CDN.
       - name: Install ffmpeg
         run: |
-          if command -v ffmpeg >/dev/null 2>&1; then
+          have_x264() {
+            ffmpeg -v error -f lavfi -i color=c=black:s=32x32:d=0.2 \
+              -c:v libx264 -f null - >/dev/null 2>&1
+          }
+
+          if command -v ffmpeg >/dev/null 2>&1 && have_x264; then
             echo "ffmpeg already available: $(ffmpeg -version | head -n 1)"
             exit 0
           fi
-          APT="sudo timeout 300 apt-get -y -o Acquire::http::Timeout=20 -o Acquire::Retries=3"
-          if ! $APT install ffmpeg; then
-            echo "::warning::install from the cached index failed; refreshing the index once"
-            sudo timeout 180 apt-get -y -o Acquire::http::Timeout=20 -o Acquire::Retries=3 update
-            $APT install ffmpeg
+
+          echo "installing the static build from PyPI (imageio-ffmpeg)"
+          if python -m pip install --quiet --disable-pip-version-check imageio-ffmpeg; then
+            FF="$(python -c 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())')"
+            if [ -x "$FF" ]; then
+              sudo ln -sf "$FF" /usr/local/bin/ffmpeg
+            fi
           fi
+
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! have_x264; then
+            echo "::warning::PyPI build missing or without libx264; fetching the GPL static build"
+            curl -fsSL --retry 3 --retry-delay 2 --max-time 240 -o /tmp/ffmpeg.tar.xz \
+              https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz
+            mkdir -p /tmp/ff
+            tar -xJf /tmp/ffmpeg.tar.xz -C /tmp/ff --strip-components=1
+            sudo ln -sf /tmp/ff/bin/ffmpeg /usr/local/bin/ffmpeg
+            sudo ln -sf /tmp/ff/bin/ffprobe /usr/local/bin/ffprobe
+          fi
+
+          if ! have_x264; then
+            echo "::error::no usable ffmpeg with libx264 on PATH"
+            exit 1
+          fi
+          ffmpeg -version | head -n 1
 
       - name: Check ffmpeg
         run: ffmpeg -version | head -n 1

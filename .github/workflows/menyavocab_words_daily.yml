@@ -176,15 +176,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # ubuntu-latest ships ffmpeg. Only fall back to apt when it is genuinely
-      # missing: `apt-get update` has hung for 15+ minutes on this runner pool.
+      # This runner image does NOT ship ffmpeg. `apt-get update` is the step
+      # that stalled for 20+ minutes on this pool, and the image already has a
+      # usable package index - so install straight from the cache first and
+      # only refresh the index if that fails. Every network op is bounded.
       - name: Install ffmpeg
         run: |
           if command -v ffmpeg >/dev/null 2>&1; then
             echo "ffmpeg already available: $(ffmpeg -version | head -n 1)"
-          else
-            sudo apt-get update -y
-            sudo apt-get install -y ffmpeg
+            exit 0
+          fi
+          APT="sudo timeout 300 apt-get -y -o Acquire::http::Timeout=20 -o Acquire::Retries=3"
+          if ! $APT install ffmpeg; then
+            echo "::warning::install from the cached index failed; refreshing the index once"
+            sudo timeout 180 apt-get -y -o Acquire::http::Timeout=20 -o Acquire::Retries=3 update
+            $APT install ffmpeg
           fi
 
       - name: Check ffmpeg

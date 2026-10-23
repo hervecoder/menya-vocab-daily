@@ -215,10 +215,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # ubuntu-latest ships ffmpeg. Only fall back to apt when it is genuinely
+      # missing: `apt-get update` has hung for 15+ minutes on this runner pool.
       - name: Install ffmpeg
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y ffmpeg
+          if command -v ffmpeg >/dev/null 2>&1; then
+            echo "ffmpeg already available: $(ffmpeg -version | head -n 1)"
+          else
+            sudo apt-get update -y
+            sudo apt-get install -y ffmpeg
+          fi
 
       - name: Check ffmpeg
         run: ffmpeg -version | head -n 1

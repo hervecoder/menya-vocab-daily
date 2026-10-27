@@ -4,8 +4,10 @@ This repository is the **daily publisher** for the Menya Icyongereza TikTok
 channel [@perime.rw250](https://www.tiktok.com/@perime.rw250).
 
 Every day it renders one **word** video — exactly 7 English→Kinyarwanda pairs —
-commits the mp4 so Buffer can fetch it over a public raw URL, and schedules the
-post on TikTok for **18:30 Africa/Kigali** with a **blank caption**.
+commits the mp4 so Buffer can fetch it over a public raw URL, then adds it to
+the channel's **Buffer queue**. Buffer posts one video per day at **18:42
+Africa/Kigali** with a **blank caption**; if that day's slot is already taken,
+the video moves to the next free day.
 
 > **Sentence videos are paused for a quality upgrade.** The sentence track is
 > kept in this repository and still runs manually, but it is no longer
@@ -35,9 +37,9 @@ always holds five future posts; a run adds exactly as many as are missing.
 | Pick | `scripts/rotation.py next` selects the next word video and writes a pending marker |
 | Render | `generate.py` draws the 1080×1920 frame and encodes the mp4 |
 | Commit | `output/<id>.mp4` + `preview/<id>.png` are pushed **before** Buffer is called |
-| Publish | `scripts/buffer_post.py` creates a Buffer post with `text: ""` and `mode: customScheduled` |
+| Publish | `scripts/buffer_post.py` adds the post to Buffer's queue with `text: ""` and `mode: addToQueue` |
 | Advance | Rotation advances **only after** Buffer accepts the post |
-| Time | 18:30 Africa/Kigali, on the first free day |
+| Time | 18:42 Africa/Kigali, Buffer's next free daily slot |
 | Caption | Empty, matching the channel's previous posts |
 
 Plan → pick → render → commit → publish → advance runs in a loop, `add` times,
@@ -51,17 +53,20 @@ silently skipping it.
 
 ### Five posts ahead
 
-`data/buffer_queue.json` is the source of truth for the queue. `queue_status.py`
-reports:
+`data/buffer_queue.json` is the workflow's local view of the Buffer queue.
+`queue_status.py` reports:
 
 ```
 depth = posts whose due_at is still in the future (failed posts excluded)
 add   = max(0, 5 - depth)
 ```
 
-Scheduling uses the **first free day**, not "today or tomorrow": Kigali dates
-already occupied by a live ledger post are skipped. With five posts queued, a
-new run lands on the sixth day; if a day is missing, that day is filled.
+Buffer owns the date. `buffer_post.py` sends each video with
+`mode: addToQueue`; Buffer puts it in the next free slot of the channel's
+posting schedule (one slot per day at 18:42 Africa/Kigali). A day that already
+holds a post is skipped, so five queued videos occupy the next five days and a
+new run lands on the sixth. The ledger is kept for queue depth and
+idempotency, not for date arithmetic.
 
 On 2026-10-23 the queue was preloaded with `content_0005` … `content_0009` for
 24–28 October 2026, and the rotation moved to `content_0010`.
@@ -127,7 +132,7 @@ again from `content_0001`. The database is validated on every run:
 - 4 chunks, 7 pairs per video, no word repeated inside a video
 - no word shared with the immediately preceding video
 
-- `data/rotation_state.json` — next content and cycle (currently `content_0010`).
+- `data/rotation_state.json` — next content and cycle (currently `content_0013`).
 - `data/rotation_manifest.json` — the 1098 ordered jobs.
 - `data/chunks/vocabulary_chunk_0{1..4}.json` — the pair data.
 - `data/buffer_queue.json` — Buffer post ids and due times (idempotency ledger).
@@ -143,7 +148,10 @@ comes from the layout planner, not a fixed rule.
 
 The state advances **only after** Buffer accepts the post, exactly like the
 word track. Until the quality pass is finished, this workflow has no trigger
-and is not referenced by cron-web.
+and is not referenced by cron-web. The separate
+`hervecoder/menya-vocab-video` sentence workflow — the one that used to
+double-post at the same time — has also lost its daily `schedule:` and is
+manual-only now.
 
 ## Duplicate protection
 
@@ -173,7 +181,7 @@ python generate.py --batch-json data/.current_job.json \
   --preview preview/content_0005.png --out output/content_0005.mp4 --video
 python scripts/buffer_post.py --content-id content_0005 --cycle 1 \
   --video-url https://raw.githubusercontent.com/hervecoder/menya-vocab-daily/main/output/content_0005.mp4 \
-  --post-time 18:30 --ledger data/buffer_queue.json
+  --mode queue --ledger data/buffer_queue.json
 ```
 
 Local pre-flight (no network):
@@ -192,6 +200,9 @@ validate one video without scheduling anything.
 `count` controls the batch: `auto` (default) adds only what is missing, while a
 number forces exactly that many videos in one run — useful for a deliberate
 preload.
+
+`mode` controls scheduling: `queue` (default) lets Buffer choose the next free
+18:42 slot; `custom` uses `post_time` for a one-off explicit time.
 
 `content_id` replays one specific video; a replay is never posted to Buffer, so
 it cannot create a duplicate.

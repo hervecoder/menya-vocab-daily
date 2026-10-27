@@ -50,7 +50,7 @@ if words:
     check("has workflow_dispatch", "workflow_dispatch" in keys)
 
     inputs = (words.get("on", words.get(True)) or {}).get("workflow_dispatch", {}).get("inputs", {})
-    for key in ("content_id", "publish", "note", "brand", "duration", "post_time", "count"):
+    for key in ("content_id", "publish", "note", "brand", "duration", "post_time", "mode", "count"):
         check(f"declares input '{key}'", key in inputs)
 
     steps = steps_of(words)
@@ -68,6 +68,8 @@ if words:
     runner = str(ids.get("run", {}).get("run", ""))
     check("loop calls rotation.py next", "rotation.py next" in runner)
     check("loop calls buffer_post.py", "buffer_post.py" in runner)
+    check("loop uses the queue by default", '--mode "$MODE"' in runner)
+    check("mode falls back to queue", "inputs.mode || 'queue'" in str((words.get("jobs") or {}).get("build", {}).get("env") or {}))
     check("loop calls rotation.py advance", "rotation.py advance" in runner)
     check("loop honours the replay id", "rotation.py select" in runner)
     check(

@@ -5,9 +5,11 @@ name: Menya Vocab Words Daily
 # This is the WORD track: exactly 7 English -> Kinyarwanda pairs per video,
 # picked from the 1098-video rotation in data/rotation_manifest.json.
 #
-# It is a QUEUE TOP-UP worker, not a one-shot publisher. Buffer holds five
-# future posts at 18:30 Africa/Kigali. Each run asks queue_status.py how many
-# are missing and renders exactly that many, so:
+# It is a QUEUE TOP-UP worker, not a one-shot publisher. Buffer's channel queue
+# owns the posting schedule (one slot per day, 18:42 Africa/Kigali) and puts
+# each new video in the next free slot, skipping days that already hold a post.
+# Each run asks queue_status.py how many are missing and renders exactly that
+# many, so:
 #   - a cold start fills all five in one run
 #   - a normal day adds one
 #   - after three failed days, the next run adds three and the buffer is whole
@@ -44,9 +46,13 @@ on:
         required: false
         default: '6'
       post_time:
-        description: 'TikTok publish time in Africa/Kigali (HH:MM, after 15:00)'
+        description: 'Only for mode=custom: TikTok publish time in Africa/Kigali (HH:MM).'
         required: false
-        default: '18:30'
+        default: '18:42'
+      mode:
+        description: 'queue = Buffer picks the next free 18:42 slot (recommended); custom = use post_time.'
+        required: false
+        default: 'queue'
       count:
         description: 'How many videos to add. "auto" tops the queue up to five.'
         required: false
@@ -69,7 +75,8 @@ jobs:
       NOTE: ${{ inputs.note || 'Iyi app yitwa "Menya Icyongereza App" wayisanga kuri Play Store yigisha icyongereza' }}
       BRAND: ${{ inputs.brand || 'Menya Icyongereza App' }}
       DURATION: ${{ inputs.duration || '6' }}
-      POST_TIME: ${{ inputs.post_time || '18:30' }}
+      POST_TIME: ${{ inputs.post_time || '18:42' }}
+      MODE: ${{ inputs.mode || 'queue' }}
       PUBLISH: ${{ inputs.publish || 'true' }}
       COUNT: ${{ inputs.count || 'auto' }}
       REPLAY_ID: ${{ inputs.content_id || '' }}
@@ -330,6 +337,7 @@ jobs:
                 --content-id "$CONTENT_ID" \
                 --cycle "$CYCLE" \
                 --video-url "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/output/${CONTENT_ID}.mp4" \
+                --mode "$MODE" \
                 --post-time "$POST_TIME" \
                 --ledger data/buffer_queue.json \
                 --github-output "$GITHUB_OUTPUT"
@@ -352,6 +360,7 @@ jobs:
                 --content-id "$CONTENT_ID" \
                 --cycle "$CYCLE" \
                 --video-url "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/output/${CONTENT_ID}.mp4" \
+                --mode "$MODE" \
                 --post-time "$POST_TIME" \
                 --dry-run
               echo "publish=false: rotation not advanced"

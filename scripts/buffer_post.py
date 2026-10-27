@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
-"""Schedule the generated video on the perime.rw250 TikTok channel in Buffer.
+"""Add the generated video to the perime.rw250 TikTok channel queue in Buffer.
 
-The workflow renders one sentence video, commits it so the mp4 has a public
-raw.githubusercontent.com URL, then calls this script.  The post is created as
-a custom-scheduled TikTok post with *no caption* at the requested Kigali time.
+The workflow renders one word video, commits it so the mp4 has a public
+raw.githubusercontent.com URL, then calls this script.  By default the post is
+added to Buffer's queue with *no caption*: Buffer owns the posting schedule
+and places the video in the next free slot, skipping days that already hold a
+post.
 
-Buffer's public API can create posts but does not expose an endpoint for
-editing a channel's reusable queue schedule.  Scheduling the post explicitly
-with ``mode: customScheduled`` is therefore how the daily slot is enforced.
+``--mode custom`` keeps the explicit-schedule behaviour for manual runs;
+``--post-time`` is only used in that mode.
 
 Environment:
     BUFFER_API_KEY   Buffer API key (GitHub Actions secret)
 
 Typical:
     python scripts/buffer_post.py \
-        --content-id sentence_0002 \
+        --content-id content_0008 \
         --cycle 1 \
-        --video-url https://raw.githubusercontent.com/.../output/sentence_0002.mp4 \
-        --post-time 18:30 \
+        --video-url https://raw.githubusercontent.com/.../output/content_0008.mp4 \
         --ledger data/buffer_queue.json
 """
 
@@ -437,7 +437,13 @@ def find_post_by_asset(
 
 
 def create_post(
-    token: str, channel_id: str, video_url: str, due_at: str, source: str
+    token: str,
+    channel_id: str,
+    video_url: str,
+    source: str,
+    *,
+    mode: str = "addToQueue",
+    due_at: str | None = None,
 ) -> dict[str, Any]:
     mutation = """
     mutation CreateTikTokPost($input: CreatePostInput!) {
@@ -459,24 +465,24 @@ def create_post(
       }
     }
     """
-    variables = {
-        "input": {
-            "text": "",
-            "channelId": channel_id,
-            "schedulingType": "automatic",
-            "mode": "customScheduled",
-            "dueAt": due_at,
-            "source": source,
-            "assets": [
-                {
-                    "video": {
-                        "url": video_url,
-                        "metadata": {"thumbnailOffset": 1000},
-                    }
+    post_input: dict[str, Any] = {
+        "text": "",
+        "channelId": channel_id,
+        "schedulingType": "automatic",
+        "mode": mode,
+        "source": source,
+        "assets": [
+            {
+                "video": {
+                    "url": video_url,
+                    "metadata": {"thumbnailOffset": 1000},
                 }
-            ],
-        }
+            }
+        ],
     }
+    if due_at:
+        post_input["dueAt"] = due_at
+    variables = {"input": post_input}
     data = graphql(token, mutation, variables)
     result = data.get("data", {}).get("createPost")
     if not result:
@@ -546,10 +552,16 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Schedule one blank-caption TikTok video in Buffer."
     )
-    parser.add_argument("--content-id", required=True, help="Rotation id, e.g. sentence_0002")
-    parser.add_argument("--cycle", type=int, default=1, help="Sentence rotation cycle")
+    parser.add_argument("--content-id", required=True, help="Rotation id, e.g. content_0008")
+    parser.add_argument("--cycle", type=int, default=1, help="Word rotation cycle")
     parser.add_argument("--video-url", required=True, help="Public mp4 URL for Buffer to fetch")
-    parser.add_argument("--post-time", default=os.environ.get("BUFFER_POST_TIME", "18:30"))
+    parser.add_argument(
+        "--mode",
+        choices=("queue", "custom"),
+        default=os.environ.get("BUFFER_POST_MODE", "queue"),
+        help="queue: Buffer picks the next free slot (default); custom: use --post-time",
+    )
+    parser.add_argument("--post-time", default=os.environ.get("BUFFER_POST_TIME", "18:42"))
     parser.add_argument("--timezone", default="", help="Override channel timezone")
     parser.add_argument("--lead-minutes", type=int, default=10)
     parser.add_argument("--organization-id", default=os.environ.get("BUFFER_ORGANIZATION_ID", ""))
@@ -611,10 +623,12 @@ def main() -> None:
         )
 
     timezone_name = args.timezone or channel.get("timezone") or "Africa/Kigali"
-    due_at = first_free_due_at(
-        args.post_time, timezone_name, args.lead_minutes, args.ledger
-    )
-    due_at_text = iso_z(due_at)
+    due_at_text = ""
+    if args.mode == "custom":
+        due_at = first_free_due_at(
+            args.post_time, timezone_name, args.lead_minutes, args.ledger
+        )
+        due_at_text = iso_z(due_at)
 
     print(
         f"channel: {channel.get('name')} ({channel.get('descriptor')}, "
@@ -622,7 +636,11 @@ def main() -> None:
     )
     print(f"caption: <blank>")
     print(f"video:   {args.video_url}")
-    print(f"schedule:{due_at_text} ({args.post_time} {timezone_name})")
+    if args.mode == "custom":
+        print(f"mode:    customScheduled ({args.post_time} {timezone_name})")
+        print(f"schedule:{due_at_text}")
+    else:
+        print("mode:    addToQueue (Buffer picks the next free daily slot)")
 
     if args.dry_run:
         print("dry run: no Buffer post created")
@@ -672,8 +690,9 @@ def main() -> None:
         token,
         channel["id"],
         args.video_url,
-        due_at_text,
         "menya-vocab-video",
+        mode="customScheduled" if args.mode == "custom" else "addToQueue",
+        due_at=due_at_text or None,
     )
     update_ledger(
         args.ledger,
